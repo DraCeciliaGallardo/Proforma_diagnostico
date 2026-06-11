@@ -1110,7 +1110,7 @@ const catalogo={
 "Endodoncia":["Endodoncia Unirradicular","Endodoncia Birradicular","Endodoncia Multirradicular","Retratamiento Endodóntico"],
 "Cirugía Oral":["Extracción Simple","Extracción Quirúrgica","Terceros Molares","Frenilectomía","Biopsia Oral"],
 "Periodoncia":["Profilaxis","Detartraje","Raspado y Alisado Radicular","Mantenimiento Periodontal","Cirugía Periodontal"],
-"Odontología General":["Consulta Inicial","Consulta de Control","Radiografía Periapical","Radiografía Panorámica","Certificado Odontológico"]
+"Odontología General":["Consulta Inicial","Ortodoncia Superior","Ortodoncia Inferior","Ortodoncia Total","Consulta de Control","Radiografía Periapical","Radiografía Panorámica","Certificado Odontológico"]
 };
 
 for(let k in catalogo) categoria.add(new Option(k,k));
@@ -1427,7 +1427,7 @@ function renderTablaPdf(){
   }
   lista.forEach(t=>{
     const tr=document.createElement('tr');
-    const piezaTexto=t.pieza || 'Toda la boca';
+    const piezaTexto=t.pieza || 'General';
     tr.innerHTML=`
       <td>
         <b>${t.tratamiento}</b>
