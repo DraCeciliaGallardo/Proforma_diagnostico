@@ -1032,6 +1032,13 @@ td{border:1px solid #ddd;padding:8px;text-align:center;vertical-align:middle}
   </div>
 </div>
 
+<!-- Proformas guardadas -->
+<div class="card no-pdf">
+  <h2>Proformas Guardadas</h2>
+  <input id="buscarProforma" placeholder="Buscar por apellido, nombre o cédula" oninput="renderListaProformas()">
+  <div id="listaProformas" class="clean-list" style="margin-top:14px"></div>
+</div>
+
 <!-- Página 3: presupuesto al final -->
 <div class="card pdf-only pdf-page budget-page">
   <div class="budget-card">
@@ -1110,13 +1117,6 @@ display:none;
 </div>
 
 
-</div>
-
-<!-- Proformas guardadas -->
-<div class="card no-pdf">
-  <h2>Proformas Guardadas</h2>
-  <input id="buscarProforma" placeholder="Buscar por apellido, nombre o cédula" oninput="renderListaProformas()">
-  <div id="listaProformas" class="clean-list" style="margin-top:14px"></div>
 </div>
 
 <script>
@@ -1490,7 +1490,6 @@ function renderPiezasTratadas(lista){
 render('diag',true);
 render('plan');
 controlarPieza();
-renderListaProformas();
 
 /* ===== Proformas guardadas (lista, buscar, editar, enviar, eliminar) ===== */
 
@@ -1638,7 +1637,7 @@ function enviarProformaGuardada(id,modo){
   const rec=leerProformasGuardadas().find(p=>p.id===id);
   if(!rec) return;
   cargarProformaEnFormulario(rec);
-  generarPDFConModo(modo);
+  setTimeout(()=>generarPDFConModo(modo), 50);
 }
 
 function eliminarProforma(id){
@@ -1693,6 +1692,8 @@ function renderListaProformas(){
   });
 }
 
+renderListaProformas();
+
 function llenarDatosPdf(){
   pdfPaciente.innerText=paciente.value || '';
   pdfPacienteDiag.innerText=paciente.value || '';
@@ -1726,6 +1727,11 @@ function generarPDFConModo(modo){
     document.body.classList.remove('pdf-proforma');
   }
 
+  const limpiarModoPdf=()=>{
+    document.body.classList.remove('generando-pdf');
+    document.body.classList.remove('pdf-proforma');
+  };
+
   setTimeout(()=>{
     html2pdf()
     .from(elementoPDF)
@@ -1736,9 +1742,11 @@ function generarPDFConModo(modo){
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
     })
     .save()
-    .then(()=>{
-      document.body.classList.remove('generando-pdf');
-      document.body.classList.remove('pdf-proforma');
+    .then(limpiarModoPdf)
+    .catch(err=>{
+      limpiarModoPdf();
+      alert('No se pudo generar el PDF. Vuelve a intentarlo. Si el problema continúa, avísame para revisarlo.');
+      console.error('Error generando PDF:', err);
     });
   },300);
 }
